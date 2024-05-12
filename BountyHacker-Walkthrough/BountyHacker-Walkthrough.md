@@ -4,6 +4,7 @@ Recon:
 1. For something like a CTF, especially on [TryHackMe](https://tryhackme.com/), the recon step tends to be a bit underwhelming. We already know our target, an internal IP address on [TryHackMe's](https://tryhackme.com/). Whois, OSINT, DNS lookups, and all that won't help us much here, so it's time to move on to the next step.  
 
 Scanning and Enumeration:
+
 2. With our target in our sights, the next step is to learn more about the target. Nmap, in its ubiquity, is my preferred port scanning tool, despite its tendency to be quite loud by default. The command I used is "sudo nmap IP_ADDR -p 1-1000 -sV -sC v". Generally, CTFs tend not to have ports open beyond the first 1000, but if I don't see anything interesting on the first pass, I'll expand the port range. -sV is always good for getting more information out of a target, and -sC can similarly reveal pretty good information with little effort. -v is mostly just a preference. I like the user feedback. This machine appears to have three open ports; 21, 22, and 80. Nmap identifes port 21 as running an FTP server, which is pretty standard for that port, port 22 as SSH, which is, again, standard, and port 80 running an HTTP service. One of the vulnerabilities nmap has identified is that the FTP server allows anonymous logins, which is not a bad thing to try, anyway, but now we know that this should let us in without needing a full set of credentials, and will be worth exploring.   
 ![A snippet of the output from nmap, showing an open FTP port that allows anonymous logins.](nmap-ftp-port.png)
 
@@ -11,6 +12,7 @@ Scanning and Enumeration:
 ![The results of the gobuster scan.](gobuster.png)
 
 Exploitation:
+
 4. An anonymous FTP login really doesn't feel like a big bad exploit, but a misconfiguration like this can be bad when there are important files on a server. Upon logging into the FTP server, a quick "ls" reveals two files; locks.txt and task.txt. I called "get" on both files, and then exited the server. Back on my attacker machine, I called "cat" on both of the files to see what kind of info they had. locks.txt was filled with a number of various 1337 sp34k variations of some themed names / phrases / words. My first instinct is that it might be worth using as a wordlist, and right now, we only have the SSH port, but no username. task.txt has two names that might be worth trying a login for. So now we have something to try.
 ![After logging into the FTP server, I checked for interesting files, and exfiltrated them to my attacker machine.](ftp-action.png)
 
@@ -21,15 +23,19 @@ Exploitation:
 ![I'm in...](im-in.png)
 
 Recon and Exfiltration:
+
 7. Having successfully breached the machine, some initial recon helps us get our bearings. "ls" reveals a file that the CTF is looking for in the directory SSH put us into. A quick "cat" reveals the flag, but there's one more that we need to find that, based on its name, is probably owned by root. Going up two directories reveals that we are the only other human user on this machine, meaning it's time to escalate privilege, and see if we can find our file in the root directory. 
 
 Escalation:
+
 8. My first go-to for privilege escalation is to look for SUID files. [GTFOBins](https://gtfobins.github.io) is a fantastic resource that I use for this step. After running the command "find / -type f -perm -04000 -ls 2>/dev/null", I search through the page on [GTFOBins](https://gtfobins.github.io) to see if any of the results I got can be exploited on the local machine. Sudo shows up on the list that we can try, and we have our user's password, but after running "sudo ls" we learn that sudo is restricted. "sudo -l" will show us exactly what we can run, and it looks like it's just /bin/tar. Maybe we can work with this. There is a page for tar on [GTFOBins](https://gtfobins.github.io), with a method for accessing a shell, and I can run tar with sudo. Worth a shot. 
 ![Successful privilege escalation.](as-root.png)
 
 Recon and Exfiltration:
+
 9. Now that I am root, let's check to see if our root.txt file is where we think it is. A quick "cd /root && ls" reveals that root.txt is, in fact, here. Calling "cat root.txt" reveals the final flag, and a successful completion of this CTF.
 ![The final flag.](flag.png)
 
 Reporting:
+
 10. Finally, having completed the CTF, and gained root access, the only thing left to do was to write up my findings, which leads us to this document. If this were an engagement for a client, this would be where we recommend fixes based on our exploits. So, one fix, is to disable anonymous FTP. Without this misconfiguration, I would have never found a username or password. Alternatively, use something other than FTP. We have an SSH service running, so SFTP might be a good alternative. In addition, don't allow users to store files with passwords on the machine. This could exist as an administrative control, or could be implemented as a technical control if there are resources available to scan files for content, and compare them to the users' passwords. A second change that might be worth implementing is to use SSH keys instead of password-based authentication. The password used was relatively strong. It is over 12 characters, and contains a mixture of upper and lowercase letters, as well as numbers, and is unlikely to be breached by the average machine attempting a pure brute-force attack. That being said, adding special characters to the password can help strengthen it against any true brute-force attempts. Alternatively, or in conjunction, an IDS/IPS may have been able to identify my dictionary attack on the SSH port, and could have blocked my IP address. With respect to the privilege escalation I used, the administrator will want to evaluate if sudo is necessary for tar. I would recommend implementing logging in conjunction with a SIEM, as well. This will allow visibility at all steps in the process. 
