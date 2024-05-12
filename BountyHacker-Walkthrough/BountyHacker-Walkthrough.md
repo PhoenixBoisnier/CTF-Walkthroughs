@@ -1,7 +1,7 @@
 One of the first CTF rooms I completed without any external help on [TryHackMe](https://tryhackme.com/) is the [Bounty Hacker Room](https://tryhackme.com/r/room/cowboyhacker). As with any engagement, having a structured plan of attack is important, and getting in the habit of it early is something I made sure to do. Depending on who you ask, there are variations on the themes, but I've come to develop a six step methodology that is based on the culmination of the various books and lessons I've been exposed to. Initial recon, scanning and enumeration, exploitation, escalation, exfiltration, and reporting. Something worth noting, though, is that this is not necessarily a linear process. There have been numerous times when I went to use an exploit, and was unable to progress, and had to backtrack a little bit, or needed to do more scanning and enumeration after a successful exploit. Below describes the steps I took to complete the CTF. 
 
 Recon:
-1. For something like a CTF, especially on [TryHackMe](https://tryhackme.com/), the recon step tends to be a bit underwhelming. We already know our target, an internal IP address on [TryHackMe's](https://tryhackme.com/). Whois, OSINT, DNS lookups, and all that won't help us much here, so it's time to move on to the next step.  
+1. For something like a CTF, especially on [TryHackMe](https://tryhackme.com/), the recon step tends to be a bit underwhelming. We already know our target, an internal IP address on [TryHackMe's](https://tryhackme.com/) network. Whois, OSINT, DNS lookups, and all that won't help us much here, so it's time to move on to the next step.  
 
 Scanning and Enumeration:
 
@@ -34,6 +34,7 @@ Escalation:
 Recon and Exfiltration:
 
 9. Now that I am root, let's check to see if our root.txt file is where we think it is. A quick "cd /root && ls" reveals that root.txt is, in fact, here. Calling "cat root.txt" reveals the final flag, and a successful completion of this CTF.
+
 ![The final flag.](flag.png)
 
 Reporting:
