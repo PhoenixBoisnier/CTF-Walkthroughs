@@ -30,7 +30,7 @@ This was a CTF I completed one afternoon after a different CTF event that didn't
 ![Being prompted for the passphrase.](enter-passphrase.png)
 
 9. From here, we need to perform privilege escalation to figure out the root password, and the root flag to complete the CTF. One of the first things I'll often do is run "sudo -l" to see what the user we're logged into can run as root. In this case, "/bin/cat" is one of them, which can be very useful for a number of reasons. The first of which is, if you know where to look, you can find some interesting files. Having done a few CTFs, I know that the "/root" directory is often where the root.txt file is, and, well, I was right. 
-![A lucky shot in the dark.](sudo-cat.txt)
+![A lucky shot in the dark.](sudo-cat.png)
 
 10. Now, to get the root password, I decided to crack the hash in the shadow file using John the Ripper. I did this by running "sudo /bin/cat /etc/passwd" and "sudo /bin/cat /etc/shadow" and copying the lines for root into their own, local files, before running the unshadow command, "unshadow passwd.txt shadow.txt output.txt". While not strictly necessary, I'm not huge on parsing Linux password hashes, and this puts it into the format John wants it in. Unfortunately, the VM on TryHackMe was not executing in a timely manner, so I copied the unshadowed file over to my machine and ran the following command (You may notice I use the "--show" flag here. With John, if you've already cracked a hash, you'll need to use this to show the password.):
     
