@@ -29,21 +29,21 @@ It's been a while since I've done a writeup for the MetaCTF challenges. There we
 pip install pypykatz
 ```
 
-    to get a version that I could run on my Linux box. From there, it was just a matter of searching for which flags / arguments to use. LLMs, search engines, running help from the program itself. Any of those methods or a combination of those methods works to figure out how to use a CLI tool like this. 
+   to get a version that I could run on my Linux box. From there, it was just a matter of searching for which flags / arguments to use. LLMs, search engines, running help from the program itself. Any of those methods or a combination of those methods works to figure out how to use a CLI tool like this. 
 
-![A screenshot of the output from the first pypykatz help output.](pypy-help0.png)
+   ![A screenshot of the output from the first pypykatz help output.](pypy-help0.png)
 
-![A second screenshot of the output from the second pypykatz help output.](pypy-help1.png)
+   ![A second screenshot of the output from the second pypykatz help output.](pypy-help1.png)
 
-After figuring out how to use the tool, you can run the proper command, and you get an output. A lot of output.
+   After figuring out how to use the tool, you can run the proper command, and you get an output. A lot of output.
 
-![The command to run.](pypy-command.png)
+   ![The command to run.](pypy-command.png)
 
-![The output from a successful pypykatz command.](pypy-output.png)
+   ![The output from a successful pypykatz command.](pypy-output.png)
 
-Since this is a MetaCTF competition, and all of the flags start with "MetaCTF{" you can GREP for that, and get the flag. I didn't do that during the competition because I thought it would be more fun to dig through who knows how many lines of output to find the needle in the haystack. Don't be like me, use GREP. 
+   Since this is a MetaCTF competition, and all of the flags start with "MetaCTF{" you can GREP for that, and get the flag. I didn't do that during the competition because I thought it would be more fun to dig through who knows how many lines of output to find the needle in the haystack. Don't be like me, use GREP. 
 
-![The flag in the output.](pypy-flag.png)
+   ![The flag in the output.](pypy-flag.png)
 
 4. Now, challenge number four was... a lot. The goal was to reverse 1024 iterations of an RSA encryption to get the plaintext. You were given the final ciphertext, and the 'n' where n = p * q for each RSA iteration. Now, I'm not bad at math, but I have to know the math, first. And then use it repeatedly so I don't forget the math. I never did a deep dive into crypto, and crypto is math. So, if you couldn't see where this is going, I decided to ask my LLM again for help with reversing the function. Something I failed to realize at the time was that the [getPrime function](https://pythonhosted.org/pycrypto/Crypto.Util.number-module.html#getPrime) doesn't return a consistent value given the same input. In retrospect, I think I should have realized that, but I had been operating under the assumption that it was a consistent function. With assumption in place, I started at a 1536 byte prime number, got the next one, and worked my way backwards, starting with the ciphertext as input, and performing the reverse process on the encryption, which involved [Euler's Totient](https://en.wikipedia.org/wiki/Euler%27s_totient_function#The_RSA_cryptosystem). Unfortunately, I was running that python script from my host machine, in a Python3 shell while simultaneously running my VM, and the script was not fast to execute. While it was running the first time, I looked at challenge five a bit (see below), but ultimately, I ran the clock out on this one. I was on the right track, but I don't know if I'd have known how to calculate p and q from n if I'd realized getPrime returned a random prime. It was a good learning experience, though. If I had been on a team, I think we'd have gotten this one. 
 
