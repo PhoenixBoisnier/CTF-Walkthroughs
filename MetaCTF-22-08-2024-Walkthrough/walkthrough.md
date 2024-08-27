@@ -21,23 +21,22 @@ It's been a while since I've done a writeup for the MetaCTF challenges. There we
 
 3. This third one kind felt like one of those things you just kind of had to know. Or in my case, be reminded of by your choice of search engine / AI model. That being said, these LLMs aren't a magic pill (see below; challenge 4), and purely relying on them won't be the best way to learn. They're good for augmenting, and serve as a great way to remind yourself what you already know, but AI can have [Problems™](https://github.com/PhoenixBoisnier/CTF-Walkthroughs/blob/main/Gandalf-Challenge/Gandalf-Walkthrough.md). Maybe some day we'll see higher quality ML, but I hope that's a ways away. For Reasons™. Back on topic, though. Downloading the file for this challenge, we get a zip file of what is very likely to be an LSASS dump. After unzipping it, my flavor of Linux decided Wireshark would be the best program for the job, and I was foolish, and trusted my machine blindly. 
 
-       ![This is what happens when you assume your machine knows what it's doing.](sadness.png)
+    ![This is what happens when you assume your machine knows what it's doing.](sadness.png)
 
         With Wireshark out of the game, and in my defense, MetaCTF has had something with Wireshark every time I've participated, I turned to one of the free LLM models available publicly to ask what kind of programs can open a .DMP file. Based on the title of the challenge, I probably should have seen this coming, but Mimikatz is involved. Because I was doing the challenge on a Linux box, I ran
 ```
 pip install pypykatz
 ```
       to get a version that I could run on my Linux box. From there, it was just a matter of searching for which flags / arguments to use. LLMs, search engines, running help from the program itself. Any of those methods or a combination of those methods works to figure out how to use a CLI tool like this. 
-  
-    ![A screenshot of the output from the first pypykatz help output.](pypy-help0.png)
+![A screenshot of the output from the first pypykatz help output.](pypy-help0.png)
 
-    ![A second screenshot of the output from the second pypykatz help output.](pypy-help1.png)
+![A second screenshot of the output from the second pypykatz help output.](pypy-help1.png)
 
     After figuring out how to use the tool, you can run the proper command, and you get an output. A lot of output.
 
-    ![The command to run.](pypy-command.png)
+![The command to run.](pypy-command.png)
 
-    ![The output from a successful pypykatz command.](pypy-output.png)
+![The output from a successful pypykatz command.](pypy-output.png)
 
     Since this is a MetaCTF competition, and all of the flags start with "MetaCTF{" you can GREP for that, and get the flag. I didn't do that during the competition because I thought it would be more fun to dig through who knows how many lines of output to find the needle in the haystack. Don't be like me, use GREP. 
 
