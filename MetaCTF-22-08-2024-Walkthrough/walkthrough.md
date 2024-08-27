@@ -23,7 +23,7 @@ It's been a while since I've done a writeup for the MetaCTF challenges. There we
 
     ![This is what happens when you assume your machine knows what it's doing.](sadness.png)
 
-        With Wireshark out of the game, and in my defense, MetaCTF has had something with Wireshark every time I've participated, I turned to one of the free LLM models available publicly to ask what kind of programs can open a .DMP file. Based on the title of the challenge, I probably should have seen this coming, but Mimikatz is involved. Because I was doing the challenge on a Linux box, I ran
+   With Wireshark out of the game, and in my defense, MetaCTF has had something with Wireshark every time I've participated, I turned to one of the free LLM models available publicly to ask what kind of programs can open a .DMP file. Based on the title of the challenge, I probably should have seen this coming, but Mimikatz is involved. Because I was doing the challenge on a Linux box, I ran
 
 ```
 pip install pypykatz
