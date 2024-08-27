@@ -23,12 +23,7 @@ It's been a while since I've done a writeup for the MetaCTF challenges. There we
 
     ![This is what happens when you assume your machine knows what it's doing.](sadness.png)
 
-   With Wireshark out of the game, and in my defense, MetaCTF has had something with Wireshark every time I've participated, I turned to one of the free LLM models available publicly to ask what kind of programs can open a .DMP file. Based on the title of the challenge, I probably should have seen this coming, but Mimikatz is involved. Because I was doing the challenge on a Linux box, I ran:
-
-```
-pip install pypykatz
-```
-    to get a version that I could run on my Linux box. From there, it was just a matter of searching for which flags / arguments to use. LLMs, search engines, running help from the program itself. Any of those methods or a combination of those methods works to figure out how to use a CLI tool like this. 
+   With Wireshark out of the game, and in my defense, MetaCTF has had something with Wireshark every time I've participated, I turned to one of the free LLM models available publicly to ask what kind of programs can open a .DMP file. Based on the title of the challenge, I probably should have seen this coming, but Mimikatz is involved. Because I was doing the challenge on a Linux box, I ran pip install pypykatz to get a version that I could run on my Linux box. From there, it was just a matter of searching for which flags / arguments to use. LLMs, search engines, running help from the program itself. Any of those methods or a combination of those methods works to figure out how to use a CLI tool like this. 
 
     ![A screenshot of the output from the first pypykatz help output.](pypy-help0.png)
 
