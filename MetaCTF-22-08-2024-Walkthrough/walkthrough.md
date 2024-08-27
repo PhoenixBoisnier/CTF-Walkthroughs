@@ -3,13 +3,13 @@ It's been a while since I've done a writeup for the MetaCTF challenges. There we
 1. For this event, I went pretty much in order of easiest to hardest. In this case, we're looking at a web exploitation problem. The website that was being hosted was pretty barren, with just a combination lock type interface. 
 ![A screenshot of the webpage with the combination lock.](code0.png)
 
-  While it's feasible that it could have been brute-forced, my experience with physical combination locks told me that wasn't the best option here. So, instead, I did what has been drilled into my head, and checked out the source code for any clues. I've only really ever seen that be worthwhile when that's explicitly what the lesson is, but without much else to go on, it was worth a shot. Turns out, it's worth checking for that low-hanging fruit, because someone decided to code the correct combination into a function in the source code. Nice.
+    While it's feasible that it could have been brute-forced, my experience with physical combination locks told me that wasn't the best option here. So, instead, I did what has been drilled into my head, and checked out the source code for any clues. I've only really ever seen that be worthwhile when that's explicitly what the lesson is, but without much else to go on, it was worth a shot. Turns out, it's worth checking for that low-hanging fruit, because someone decided to code the correct combination into a function in the source code. Nice.
 
-  ![A screenshot of the source code with the answer.](code1.png)
+    ![A screenshot of the source code with the answer.](code1.png)
 
-  After fiddling with the UI, I managed to get the combination into the lock, press the button, and get the first flag. Off to a good start!
+    After fiddling with the UI, I managed to get the combination into the lock, press the button, and get the first flag. Off to a good start!
 
-![A screenshot of the valid combination, with the flag displayed below.](code2.png)
+    ![A screenshot of the valid combination, with the flag displayed below.](code2.png)
 
 2. For the second challenge, we were presented with a link to some source code that was running on a remote server we could connect to using the provided command in the challenge. Looking at the code, I could tell it was C. Gross. (I'm not a fan of C. I like it better than Scala (Ask me about the time I got an error preventing compilation in MY COMMENTS with Scala...), but that doesn't mean I have to like C.) For those of you unfamiliar with C, the first line in the code starts pretty much every C program I've seen. Anyway, that could mean that there was some buffer overflow going on here, and I'd recently watched a video on how to test overflow bugs. So I was excited to see how much I'd retained. Not pictured is the vim command I used to copy / paste the source, but once I had it in a C file, I compiled it using gcc, specifiying the output file with -o. A gets() warning popped out, which means I'm probably right about the buffer overflow. Next, I made the output file executable with chmod. From there, it was time to run this bad boy and see what we had. 
 ![A screenshot of the process to get the provided source code up an running, with some example executions.](easy-overflow.png)
