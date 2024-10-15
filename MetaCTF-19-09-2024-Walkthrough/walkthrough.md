@@ -6,6 +6,7 @@ It's been a month, and I did well enough on the CTF this time around, so we're u
 
 2. The next challenge was a bit time consuming, the way I approached it. In this challenge, we were provided with the source code of a program that was running on a remote machine. Like most other MetaCTF challenges, the flag was not part of the code. [Maybe someday, it will be.](https://github.com/PhoenixBoisnier/CTF-Walkthroughs/blob/main/MetaCTF-22-08-2024-Walkthrough/code1.png) I started to go through the logic by hand, but it became clear to me that this was the challenge that MetaCTF expected us to write code for. And I'm not too keen on doing that in timed challenges for topics I'm not regularly programming on / in. So I tried to get Copilot to help write an algorithm to create keys. I keep finding that Copilot is a bit limited in this respect. This one would have been simple enough to do, but wrestling with Copilot was the more appealing choice, to me, apparently. After that didn't work, I took a peek at the third and fourth challenges while I built up the drive to go through the logic by hand before returning to the second challenge. To solve this one, I opened up a python shell in the terminal on my machine, and went condition by condition. When I was ready, I connected to the remote machine with the supplied command, input the key, and got the flag. Below is just the logic that defines the key. It's easier to look at each character's logic on each line, but python is whitespace sensitive, so be aware. You want it to return true, which means each condition needs to be negated. Don't forget DeMorgan's here if you're going to do this manually, since if any of these conditions fails (meaning if any "line" evaluates to true), we don't get the flag. 
 
+```
        len(key) != 8 
     or ord(key[0]) % 5 != 3 
     or ord(key[1]) % 4 != 2 
@@ -15,11 +16,14 @@ It's been a month, and I did well enough on the CTF this time around, so we're u
     or not key[5].isdigit() or int(key[5]) <= int(key[2]) + 2 
     or not key[6].islower() or ord(key[6]) >= ord(key[3]) - 3 
     or not key[7].isupper() or ord(key[7]) >= ord(key[4]) - 4:
+```
 
 3. This challenge was a website exploitation challenge. While I did not end up solving this one, I did know where to attack. The website itself is very bare-bones. There's no real obvious inputs, and the source code of the page itself doesn't really show us anything worth targeting. Clicking around on the various books ends up revealing a URL parameter, which ends up being the part of the website that we need to target. Conveniently, this challenge comes with a source code download. Inconveniently, for me, it is in Go, and it turns out that I don't know how to inject using Go. The code was easy enough to read, and it confirmed that this was the part of the website we needed to target; the URL parameter was not sanitized, and was passed along to the function that ends up loading the information into the page. I was able to play around with the parameter, and get my URL input to display on the page, but I think that ended up being part of my downfall. I thought I could send the parameter flag, flag.txt, etc. But, because the backend was Go, it needed a goofy set of double curly braces, and I needed to reference the function. Or as the writeup calls it, the method (as do most other programming languages). I don't know that I've seen a language or website where I: had the source code, and could call functions in the source code from the website input. But now I have something interesting to look up on my preferred training website(s). 
 ![The website as it first loads.](website0.png)
-![The URL with a parameter loaded.](website1.png)
-![The goofy Go payload in the URL.](website2.png)
+
+   ![The URL with a parameter loaded.](website1.png)
+
+   ![The goofy Go payload in the URL.](website2.png)
 
 4. This was the crypto challenge for this month's CTF. I really didn't touch this one very much. I tried to see if I could get the encryption key to pop out by giving it short input, or other input that could have revealed information about the key, but I was busy with the other challenges / busy testing the limits of Copilot, evidently.
 
