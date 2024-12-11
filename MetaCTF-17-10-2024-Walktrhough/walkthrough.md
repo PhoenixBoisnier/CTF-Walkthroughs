@@ -12,36 +12,36 @@ I'm a little late with October's walkthrogh -- writing it after November's CTF (
 
 2. The next challenege is a reverse engineering challenge, so I booted up Ghidra. While I waited, I called "chmod +x tomb" on the challenge file, tomb, and playd around a little. 
 
-![Running tomb.](tomb-output.png)
+	![Running tomb.](tomb-output.png)
 
-	It looks like this challenge was going to be looking for a password of some sort. One of these days, I'll remember to use the strings command, but instead, I started paging through the functions that Ghidra was showing. The main function has a while(true) loop that is running a strcmp() function on what appears to be a hexadecimal string. 
+    It looks like this challenge was going to be looking for a password of some sort. One of these days, I'll remember to use the strings command, but instead, I started paging through the functions that Ghidra was showing. The main function has a while(true) loop that is running a strcmp() function on what appears to be a hexadecimal string. 
 
-![A screenshot of the relevant code.](code-snippet.png)
+	![A screenshot of the relevant code.](code-snippet.png)
 
-	So between the loop that keeps the program running, and the function comparing strings on an obsfucated value, I figured I should try to convert it from hexadecimal to ASCII so I can read it. I tend to use [RapidTables](https://www.rapidtables.com/convert/number/hex-to-ascii.html)'s hex to ASCII converter, but another popular option is [CyberChef](https://cyberchef.org/). Lo and behold, the converted value is in the same format that MetaCTF does its flags. 
+    So between the loop that keeps the program running, and the function comparing strings on an obsfucated value, I figured I should try to convert it from hexadecimal to ASCII so I can read it. I tend to use [RapidTables](https://www.rapidtables.com/convert/number/hex-to-ascii.html)'s hex to ASCII converter, but another popular option is [CyberChef](https://cyberchef.org/). Lo and behold, the converted value is in the same format that MetaCTF does its flags. 
 	
-![A screenshot of the conversion on RapidTables.](converted.png)
+	![A screenshot of the conversion on RapidTables.](converted.png)
 
 3. The third challenge was a web-based challenge. The page is a form where you can upload files. This immediately seemed like a file upload challenge, so I began trying various filetypes to upload. The first was just a simple test file, test.txt. By doing so, this helps us scope out two things: whether or not the website accepts .txt files, and potentially where those files end up on the website. 
 
-![The website with the file upload.](upload.png)
+	![The website with the file upload.](upload.png)
 
-	Lucky for us, it accepts both .txt files, tells us where the files are uploaded, and we see on the upload confirmation page that the website uses PHP. 
+    Lucky for us, it accepts both .txt files, tells us where the files are uploaded, and we see on the upload confirmation page that the website uses PHP. 
 	
-![The website with the successful file upload.](upload-success.png)
-![The URL of the website on the page with the successful file upload.](upload-url.png)
+	![The website with the successful file upload.](upload-success.png)
+	![The URL of the website on the page with the successful file upload.](upload-url.png)
 	
-	So the next thing to try is to upload a PHP script that we can control. First I tried a basic .php file, and was shown the upload failure page. 
+    So the next thing to try is to upload a PHP script that we can control. First I tried a basic .php file, and was shown the upload failure page. 
 	
-![The website failing to accept the file upload.](upload-fail.php)	
+	![The website failing to accept the file upload.](upload-fail.php)	
 	
-	Which is fine, I figured the third challenge wouldn't be as easy as .php. So I tried .php3, .php4, and finally was able to upload a .phps file. However, upon visiting the .phps file page, the file I attempted to load on the page did not function as I had expected. My first upload attempted to execute "cat flag.txt", but showed only a blank page. Because file uploads aren't something I've excelled at in live-fire, or close enough scenarios, I ended up circling back to this one later. When I did end up back on this one, time was running short, so I tried a few other techniques, one of which being a directory traversal attack on the URL. At the time of the competition, this was a valid attack, and it worked. 
+    Which is fine, I figured the third challenge wouldn't be as easy as .php. So I tried .php3, .php4, and finally was able to upload a .phps file. However, upon visiting the .phps file page, the file I attempted to load on the page did not function as I had expected. My first upload attempted to execute "cat flag.txt", but showed only a blank page. Because file uploads aren't something I've excelled at in live-fire, or close enough scenarios, I ended up circling back to this one later. When I did end up back on this one, time was running short, so I tried a few other techniques, one of which being a directory traversal attack on the URL. At the time of the competition, this was a valid attack, and it worked. 
 	
-![An example of the now-patched directory traversal attack o nthe URL.](upload-path-traversal.png)	
+	![An example of the now-patched directory traversal attack o nthe URL.](upload-path-traversal.png)	
 	
-	When I went to do this writeup, as a sanity check, I actually reached out to the support email address MetaCTF has for these challenges (who've always been very nice to exchange communications with). Turns out that the flag had been somewhere it was not intended, and that my attack was no longer effective. As a result of me reaching out, the author ended up realizing there was a typo in the writeup that pointed to the old directory, and that was updated. 
+    When I went to do this writeup, as a sanity check, I actually reached out to the support email address MetaCTF has for these challenges (who've always been very nice to exchange communications with). Turns out that the flag had been somewhere it was not intended, and that my attack was no longer effective. As a result of me reaching out, the author ended up realizing there was a typo in the writeup that pointed to the old directory, and that was updated. 
 	
-	Because of this, I ended up trying it out the way it was intended, and learned a bit about htaccess files. The first few times, I gave the .htaccess file a name, thinking it was a type of unique file extension, based on the way I was reading the writeup. Turns out, it's more of a hidden file type . before the htaccess portion. That took me longer to realize than I'd have hoped, but I did eventually get it to work, and get the flag. This exploit takes advantage of using the .htaccess file to allow us to map custom file extensions, and the fact that the .htaccess file can be uploaded. By doing this, we can upload a PHP webshell with an arbitrary extension, so long as it's mapped in .htaccess, upload the .htaccess file, then the PHP webshell (or a PHP script that calls "cat flag.txt", but that's less versatile), and send commands from the website's server. 
+    Because of this, I ended up trying it out the way it was intended, and learned a bit about htaccess files. The first few times, I gave the .htaccess file a name, thinking it was a type of unique file extension, based on the way I was reading the writeup. Turns out, it's more of a hidden file type . before the htaccess portion. That took me longer to realize than I'd have hoped, but I did eventually get it to work, and get the flag. This exploit takes advantage of using the .htaccess file to allow us to map custom file extensions, and the fact that the .htaccess file can be uploaded. By doing this, we can upload a PHP webshell with an arbitrary extension, so long as it's mapped in .htaccess, upload the .htaccess file, then the PHP webshell (or a PHP script that calls "cat flag.txt", but that's less versatile), and send commands from the website's server. 
 
 4. This challenge was a binary exploitation, and I feel like I knew, roughly, what I had to do to solve this one. Or at least I did during the challenge. I had been recently playing with something I thought could be somewhat similar in the Huntress 2024 CTF, in honor of cybersecurity awareness month. I have a document for my experience with that, too, but I only placed 666th, and got maybe a third of the challenges. It was tough to stay competitive while having to work during the day. In any case, this was a buffer overflow exploit. I was able to figure out how much I needed to put into the input to get an error to pop out, but I couldn't quite make the leap from input to bypass the canary. Let alone figure out how to leak the dynamic memory address of the win() function. Seeing that this challenge's writeup has a script as part of its solution, I think I probably spun my wheels too long on the third challenge to have gotten this one, anyway. 
 
